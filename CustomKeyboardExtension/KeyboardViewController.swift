@@ -123,7 +123,8 @@ class KeyboardViewController: UIInputViewController {
 		case .symbols: 
 			keyboard = Constants.symbolKeys
 		}
-		
+        
+        
 		let numRows = keyboard.count
 		for row in 0...numRows - 1{
 			for col in 0...keyboard[row].count - 1{
@@ -133,16 +134,18 @@ class KeyboardViewController: UIInputViewController {
                 let smallKey = smallLetter[row][col]
                 let capsKey = keyboard[row][col].capitalized
                 let keyToDisplay = shiftButtonState == .normal ? key : capsKey
-                if(keyboard[0][0] == "១"){
-                    return button = CustomButton(label: smallKey)  
-                }
-                else {
+                
+                if(keyboard[0][0] == "១") {
+                    button = CustomButton(label: smallKey)
+                } else {
                     button = UIButton(type: .custom)
                 }
-                
+                button.tag = row * 10
+                button.tag += col
 				button.backgroundColor = Constants.keyNormalColour
-				button.setTitleColor(.black, for: .normal)
+				button.setTitleColor(.white, for: .normal)
 				button.layer.setValue(key, forKey: "original")
+                button.layer.setValue(smallKey, forKey: "subLetter")
 				button.layer.setValue(keyToDisplay, forKey: "keyToDisplay")
 				button.layer.setValue(false, forKey: "isSpecial")
 				button.setTitle(keyToDisplay, for: .normal)
@@ -177,7 +180,7 @@ class KeyboardViewController: UIInputViewController {
 				}
 				
 				//top row is longest row so it should decide button width 
-				print("button width: ", buttonWidth)
+//				print("button width: ", buttonWidth)
 				if key == "⚙︎" || key == "#+=" || key == "ABC" || key == "123" || key == "⬆️" || key == "🌐" || key == "☻"{
 					button.widthAnchor.constraint(equalToConstant: buttonWidth + buttonWidth/4).isActive = true
 					button.layer.setValue(true, forKey: "isSpecial")
@@ -262,9 +265,14 @@ class KeyboardViewController: UIInputViewController {
 	}
 	
     @objc func handleSwipe(_ gesture: UIGestureRecognizer){
-        print("Swipe up")
-        proxy.insertText("ា")
-        (gesture.view as! UIButton).backgroundColor = .blue
+        if let btn = gesture.view as? UIButton {
+            let row = btn.tag / 10
+            let col = btn.tag % 10
+            var subLetter = ""
+            subLetter = Constants.smallLetterKeys[row][col]
+            proxy.insertText(String(subLetter))
+        }
+        (gesture.view as! UIButton).backgroundColor = Constants.specialKeyNormalColour
     }
     
 	@objc func keyMultiPress(_ sender: UIButton, event: UIEvent){

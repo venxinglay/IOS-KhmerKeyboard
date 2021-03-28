@@ -12,15 +12,14 @@ class CustomButton: UIButton  {
     
     private let lbl:  UILabel = {
         let lbl = UILabel()
-        lbl.text = "ក"
         lbl.textAlignment = .right
-        lbl.font = UIFont.systemFont(ofSize: 10)
+        lbl.font = UIFont.systemFont(ofSize: 9)
+        lbl.textColor = .white
         return lbl
     }()
     
     init(label: String) {
         super.init(frame: .zero)
-        self.titleLabel?.font = UIFont.systemFont(ofSize: 20)
         lbl.text = label
         addSubview(lbl)
     }
